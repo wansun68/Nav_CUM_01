@@ -61,8 +61,8 @@ all: main-build
 main-build: Nav_CUM.elf secondary-outputs
 
 # Tool invocations
-Nav_CUM.elf: $(OBJS) $(USER_OBJS) C:\Users\ivan.chava\Desktop\Nav_CUM\STM32F031K6TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Nav_CUM.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0 -T"C:\Users\ivan.chava\Desktop\Nav_CUM\STM32F031K6TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Nav_CUM.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Nav_CUM.elf: $(OBJS) $(USER_OBJS) C:\Users\ivan.chava\Desktop\Nav_CUM\Nav_CUM_01\STM32F031K6TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "Nav_CUM.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0 -T"C:\Users\ivan.chava\Desktop\Nav_CUM\Nav_CUM_01\STM32F031K6TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Nav_CUM.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

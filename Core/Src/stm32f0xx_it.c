@@ -178,7 +178,6 @@ void TIM14_IRQHandler(void)
   /* USER CODE BEGIN TIM14_IRQn 1 */
 
   flag.TM_flag = 1;
-  TeleMetrySend();
 
   /* USER CODE END TIM14_IRQn 1 */
 }
@@ -236,99 +235,8 @@ void USART1_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
-void TeleMetrySend(void)
-{
-	HAL_ADC_Start(&hadc);
-	  HAL_ADC_PollForConversion(&hadc, 10);
-	  pwrVal = HAL_ADC_GetValue(&hadc);
-	  HAL_ADC_Stop(&hadc);
 
-	  pwrVal = pec_Update(pwrVal);
-	  Bin2Str(pwrVal, buffStr);
 
-	  TM_Str[0]='#';
-	  TM_Str[1]='T';
-	  TM_Str[2]='M';
-	  TM_Str[3]=',';
-	  TM_Str[4]=buffStr[0];
-	  TM_Str[5]=buffStr[1];
-	  TM_Str[6]='.';
-	  TM_Str[7]=buffStr[2];
-	  TM_Str[8]=',';
-	  TM_Str[9]='R';
-	  TM_Str[10]=',';
-	  if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_0)==GPIO_PIN_SET) TM_Str[11]='W';
-	  else TM_Str[11]=' ';
-	  TM_Str[12]='*';
-	  CrcBuild();
-	  TM_Str[15]='\n';
-	  TM_Str[16]='\r';
 
-	  HAL_UART_Transmit(&huart1, TM_Str, 17, 0xFFFF);
-	  HAL_TIM_Base_Start_IT(&htim16);
-
-	  if(pwrVal <= 300) pwr_cnt = 1;
-	  else if(pwrVal > 300 && pwrVal <= 340) pwr_cnt = 2;
-	  else if(pwrVal > 340 && pwrVal <= 380) pwr_cnt = 3;
-	  else pwr_cnt = 4;
-
-	  led_cnt = pwr_cnt*2;
-}
-
-void CrcBuild (void)
-{
-	uint8_t crc = 0;
-	for (uint8_t i = 0; i <=12; i++)
-	{
-		crc += TM_Str[i];
-	}
-	uint8_t LB = crc&0x0f;
-	uint8_t HB = crc>>4;
-	uint8_t LB_cnt = 0;
-	uint8_t HB_cnt = 0;
-
-	for (uint8_t a = 0; a <=HB; a++)
-	{
-		HB_cnt++;
-	}
-
-	if (HB_cnt == 0) TM_Str[13] = '0';
-	else if (HB_cnt == 1) TM_Str[13] = '1';
-	else if (HB_cnt == 2) TM_Str[13] = '2';
-	else if (HB_cnt == 3) TM_Str[13] = '3';
-	else if (HB_cnt == 4) TM_Str[13] = '4';
-	else if (HB_cnt == 5) TM_Str[13] = '5';
-	else if (HB_cnt == 6) TM_Str[13] = '6';
-	else if (HB_cnt == 7) TM_Str[13] = '7';
-	else if (HB_cnt == 8) TM_Str[13] = '8';
-	else if (HB_cnt == 9) TM_Str[13] = '9';
-	else if (HB_cnt == 10) TM_Str[13] = 'A';
-	else if (HB_cnt == 11) TM_Str[13] = 'B';
-	else if (HB_cnt == 12) TM_Str[13] = 'C';
-	else if (HB_cnt == 13) TM_Str[13] = 'D';
-	else if (HB_cnt == 14) TM_Str[13] = 'E';
-	else if (HB_cnt == 15) TM_Str[13] = 'F';
-
-	for (uint8_t b = 0; b <=LB; b++)
-	{
-		LB_cnt++;
-	}
-	if (LB_cnt == 0) TM_Str[14] = '0';
-	else if (LB_cnt == 1) TM_Str[14] = '1';
-	else if (LB_cnt == 2) TM_Str[14] = '2';
-	else if (LB_cnt == 3) TM_Str[14] = '3';
-	else if (LB_cnt == 4) TM_Str[14] = '4';
-	else if (LB_cnt == 5) TM_Str[14] = '5';
-	else if (LB_cnt == 6) TM_Str[14] = '6';
-	else if (LB_cnt == 7) TM_Str[14] = '7';
-	else if (LB_cnt == 8) TM_Str[14] = '8';
-	else if (LB_cnt == 9) TM_Str[14] = '9';
-	else if (LB_cnt == 10) TM_Str[14] = 'A';
-	else if (LB_cnt == 11) TM_Str[14] = 'B';
-	else if (LB_cnt == 12) TM_Str[14] = 'C';
-	else if (LB_cnt == 13) TM_Str[14] = 'D';
-	else if (LB_cnt == 14) TM_Str[14] = 'E';
-	else if (LB_cnt == 15) TM_Str[14] = 'F';
-}
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
